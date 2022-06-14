@@ -19,10 +19,8 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
     - name: Publish
-      run: dotnet publish --no-restore
+      run: dotnet publish --no-restore -p:PublishProfile=FolderProfile
     - uses: TheDoctor0/zip-release@0.6.2
       with:
         # Filename for archive
