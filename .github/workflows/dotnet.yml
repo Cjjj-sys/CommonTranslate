@@ -27,8 +27,6 @@ jobs:
       with:
         # Filename for archive
         filename: CommonTranslate.Publish.zip
-        # Base path for archive files
-        path: bin/Debug/net6.0/
         # Working directory before zipping
         directory: bin/Debug/net6.0/
         # List of excluded files / directories
