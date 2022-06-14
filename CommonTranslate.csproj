@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <StartupObject>CommonTranslate.Program</StartupObject>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <ApplicationIcon>Minecraft_Table.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Minecraft_Table.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TencentCloudSDK" Version="3.0.534" />
+  </ItemGroup>
+
+</Project>
