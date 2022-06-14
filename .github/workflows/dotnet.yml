@@ -23,5 +23,19 @@ jobs:
       run: dotnet build --no-restore
     - name: Publish
       run: dotnet publish --no-restore
+    - uses: TheDoctor0/zip-release@0.6.2
+      with:
+        # Filename for archive
+        filename: CommonTranslate.Publish.zip
+        # Base path for archive files
+        path: bin/Debug/net6.0/
+        # Working directory before zipping
+        directory: bin/Debug/net6.0/
+        # List of excluded files / directories
+        exclusions: publish/
+    - uses: actions/upload-artifact@v2
+      with:
+        name: CommonTranslate.Publish
+        path: bin/Debug/net6.0/publish/CommonTranslate.Publish.zip
     - name: Test
       run: dotnet test --no-build --verbosity normal
