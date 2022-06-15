@@ -8,6 +8,8 @@
     <StartupObject>CommonTranslate.Program</StartupObject>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <ApplicationIcon>Minecraft_Table.ico</ApplicationIcon>
+    <FileVersion>0.0.2</FileVersion>
+    <AssemblyVersion>0.0.2</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

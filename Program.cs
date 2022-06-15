@@ -24,6 +24,9 @@ static class Program
                 case "2":
                     TranslateJsonNameDescription(filePath);
                     break;
+                case "3":
+                    TranslateJsonHQM(filePath);
+                    break;
                 default:
                     TranslateJson(filePath);
                     break;
@@ -45,8 +48,14 @@ static class Program
         println("  \"item.one\": \"One Item\",");
         println("   ......");
         println("===============================");
-        println("1.含Name和Description的Json语言文件");
+        println("2.含Name和Description的Json语言文件");
         println("{\n  \"axe\":{\n    \"name\":\"Axe\",\n    \"description\":[\n      \"Just a Axe.\",\n      \"Nothing Specially.\",\n      \"......\",\n      \":D\"\n    ]\n  },\n  \"apple\":{\n    \"name\":\"Apple\",\n    \"description\":[\n      \"A Megic Apple.\"\n    ]\n  }\n  ......,");
+        println("===============================");
+        println("3.HQM(Hardcore Questing Mode)任务书Json语言文件");
+        println("{\n  \"name\": \"sth\",");
+        println("  \"description\": \"sth\",");
+        println("  \"quests\": [内含name和description的Array] ,");
+        println("  ......");
         println("===============================");
     }
 
@@ -127,6 +136,18 @@ static class Program
         string langJosn = File.ReadAllText(filePath);
         JObject langJsonObject = LangJson.TranslateLangJsonNameDescription(langJosn);
         string targetJson = langJsonObject.ToString();
+        File.WriteAllText(filePath + ".txt", targetJson);
+    }
+
+    static void TranslateJsonHQM(string filePath)
+    {
+        string langJosn = File.ReadAllText(filePath);
+        JObject langJsonObject = JObject.Parse(langJosn);
+        JArray questsArray = JArray.Parse(langJsonObject["quests"].ToString());
+        JArray translatedArray = LangJson.TranslateLangJsonHQM(questsArray);
+        JObject translatedLangJsonObject = LangJson.TranslateLangJsonHQMRoot(langJsonObject);
+        translatedLangJsonObject["quests"] = translatedArray;
+        string targetJson = translatedLangJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
     }
 
