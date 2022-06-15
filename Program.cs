@@ -13,13 +13,41 @@ static class Program
         {
             print("请输入文件路径(或者把文件拖进来):");
             string filePath = Console.ReadLine().Replace("\"", "");
-            TranslateJson(filePath);
+            println("请选择文件的格式(默认为 1):");
+            PrintModes();
+            string translateMode = Console.ReadLine();
+            switch (translateMode)
+            {
+                case "1":
+                    TranslateJson(filePath);
+                    break;
+                case "2":
+                    TranslateJsonNameDescription(filePath);
+                    break;
+                default:
+                    TranslateJson(filePath);
+                    break;
+            }
+            //TranslateJsonNameDescription(filePath);
+            //TranslateJson(filePath);
             println("====================================");
             println($"翻译完成,请查看文件 {filePath+".txt"}");
             println("====================================\n");
         }
         //TranslateMidStr(filePath, "|", "|");
+    }
 
+    static void PrintModes()
+    {
+        println("===============================");
+        println("1.普通Json语言文件");
+        println("{\n  \"block.one\": \"One Block\",");
+        println("  \"item.one\": \"One Item\",");
+        println("   ......");
+        println("===============================");
+        println("1.含Name和Description的Json语言文件");
+        println("{\n  \"axe\":{\n    \"name\":\"Axe\",\n    \"description\":[\n      \"Just a Axe.\",\n      \"Nothing Specially.\",\n      \"......\",\n      \":D\"\n    ]\n  },\n  \"apple\":{\n    \"name\":\"Apple\",\n    \"description\":[\n      \"A Megic Apple.\"\n    ]\n  }\n  ......,");
+        println("===============================");
     }
 
     private static void print(string text)
@@ -90,6 +118,14 @@ static class Program
     {
         string langJosn = File.ReadAllText(filePath); 
         JObject langJsonObject = LangJson.TranslateLangJson(langJosn);
+        string targetJson = langJsonObject.ToString();
+        File.WriteAllText(filePath + ".txt", targetJson);
+    }
+
+    static void TranslateJsonNameDescription(string filePath)
+    {
+        string langJosn = File.ReadAllText(filePath);
+        JObject langJsonObject = LangJson.TranslateLangJsonNameDescription(langJosn);
         string targetJson = langJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
     }
