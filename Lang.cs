@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,8 +7,41 @@ using Newtonsoft.Json.Linq;
 
 namespace CommonTranslate
 {
-    public static class LangJson
+    public class Lang
     {
+        public string LangJson
+        {
+            get;
+            set;
+        } 
+
+        public JObject LangJObject
+        {
+            get;
+            set;
+        }
+
+        public JArray LangJArray
+        {
+            get;
+            set;
+        }
+
+        public Lang(string json)
+        {
+            this.LangJson = json;
+        }
+
+        public Lang(JObject jobject)
+        {
+            this.LangJObject = jobject;
+        }
+
+        public Lang(JArray jArray)
+        {
+            this.LangJArray = jArray;
+        }
+
         private static void println(string text)
         {
             Console.WriteLine(text);
@@ -21,9 +54,9 @@ namespace CommonTranslate
                 println(item.ToString());
             }
         }
-        public static JObject TranslateLangJson(string json)
+        public JObject TranslateLangJson()
         {
-            JObject jsonObject = JObject.Parse(json);
+            JObject jsonObject = JObject.Parse(LangJson);
             JObject translatedJsonObject = new JObject();
             int total = jsonObject.Count;
             int progress = 0;
@@ -41,9 +74,9 @@ namespace CommonTranslate
             return translatedJsonObject;
         }
 
-        public static JObject TranslateLangJsonNameDescription(string json)
+        public JObject TranslateLangJsonNameDescription()
         {
-            JObject jsonObject = JObject.Parse(json);
+            JObject jsonObject = JObject.Parse(LangJson);
             JObject translatedObject = new JObject();
             int total = 0;
             foreach (var item in jsonObject)
@@ -82,8 +115,9 @@ namespace CommonTranslate
             return translatedObject;
         }
 
-        public static JArray TranslateLangJsonHQM(JArray jsonObject)
+        public JArray TranslateLangJsonHQM()
         {
+            JArray jsonObject = LangJArray;
             JArray translatedObject = new JArray();
             int total = jsonObject.Count * 2;
             int progress = 0;
@@ -112,8 +146,9 @@ namespace CommonTranslate
             return translatedObject;
         }
 
-        public static JObject TranslateLangJsonHQMRoot(JObject jsonObject)
+        public JObject TranslateLangJsonHQMRoot()
         {
+            JObject jsonObject = LangJObject;  
             int total = 2;
             int progress = 0;
             println($"[预计用时: >={0.2 * total} 秒]");
