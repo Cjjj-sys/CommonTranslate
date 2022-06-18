@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using System;
 
 namespace CommonTranslate;
@@ -126,7 +126,8 @@ static class Program
     static void TranslateJson(string filePath)
     {
         string langJosn = File.ReadAllText(filePath); 
-        JObject langJsonObject = LangJson.TranslateLangJson(langJosn);
+        var lang = new Lang(langJosn);
+        JObject langJsonObject = lang.TranslateLangJson();
         string targetJson = langJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
     }
@@ -134,7 +135,8 @@ static class Program
     static void TranslateJsonNameDescription(string filePath)
     {
         string langJosn = File.ReadAllText(filePath);
-        JObject langJsonObject = LangJson.TranslateLangJsonNameDescription(langJosn);
+        var lang = new Lang(langJosn);
+        JObject langJsonObject = lang.TranslateLangJsonNameDescription();
         string targetJson = langJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
     }
@@ -143,9 +145,11 @@ static class Program
     {
         string langJosn = File.ReadAllText(filePath);
         JObject langJsonObject = JObject.Parse(langJosn);
+        var langJObject = new Lang(langJsonObject);
         JArray questsArray = JArray.Parse(langJsonObject["quests"].ToString());
-        JArray translatedArray = LangJson.TranslateLangJsonHQM(questsArray);
-        JObject translatedLangJsonObject = LangJson.TranslateLangJsonHQMRoot(langJsonObject);
+        var langJArray = new Lang(questsArray);
+        JArray translatedArray = langJArray.TranslateLangJsonHQM();
+        JObject translatedLangJsonObject = langJObject.TranslateLangJsonHQMRoot();
         translatedLangJsonObject["quests"] = translatedArray;
         string targetJson = translatedLangJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
