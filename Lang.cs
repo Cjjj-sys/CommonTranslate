@@ -9,44 +9,28 @@ namespace CommonTranslate
 {
     public class Lang
     {
-        public string LangJson
-        {
-            get;
-            set;
-        } 
-
         public JObject LangJObject
         {
             get;
-            set;
+            init;
         }
-
         public JArray LangJArray
         {
             get;
-            set;
+            init;
         }
-
-        public Lang(string json)
-        {
-            this.LangJson = json;
-        }
-
-        public Lang(JObject jobject)
-        {
-            this.LangJObject = jobject;
-        }
-
-        public Lang(JArray jArray)
-        {
-            this.LangJArray = jArray;
-        }
-
+        /// <summary>
+        /// 只是更方便的输出，与 Console.WriteLine() 无异
+        /// </summary>
+        /// <param name="text">文本</param>
         private static void println(string text)
         {
             Console.WriteLine(text);
         }
-
+        /// <summary>
+        /// 打印JObject里的键值对
+        /// </summary>
+        /// <param name="jobject">JObject</param>
         public static void PrintJObject(JObject jobject)
         {
             foreach (var item in jobject)
@@ -54,9 +38,13 @@ namespace CommonTranslate
                 println(item.ToString());
             }
         }
+        /// <summary>
+        /// 翻译Json语言文件（普通格式）
+        /// </summary>
+        /// <returns>JObject</returns>
         public JObject TranslateLangJson()
         {
-            JObject jsonObject = JObject.Parse(LangJson);
+            JObject jsonObject = LangJObject;
             JObject translatedJsonObject = new JObject();
             int total = jsonObject.Count;
             int progress = 0;
@@ -73,10 +61,13 @@ namespace CommonTranslate
             }
             return translatedJsonObject;
         }
-
+        /// <summary>
+        /// 翻译Name和Description格式的Json语言文件
+        /// </summary>
+        /// <returns>JObject</returns>
         public JObject TranslateLangJsonNameDescription()
         {
-            JObject jsonObject = JObject.Parse(LangJson);
+            JObject jsonObject = LangJObject;
             JObject translatedObject = new JObject();
             int total = 0;
             foreach (var item in jsonObject)
@@ -114,7 +105,10 @@ namespace CommonTranslate
             }
             return translatedObject;
         }
-
+        /// <summary>
+        /// 翻译HQM任务书的Json里的Quests (需要JArray类型)
+        /// </summary>
+        /// <returns>JArray</returns>
         public JArray TranslateLangJsonHQM()
         {
             JArray jsonObject = LangJArray;
@@ -145,7 +139,10 @@ namespace CommonTranslate
             }
             return translatedObject;
         }
-
+        /// <summary>
+        /// 翻译HQM任务书的Json的根里的Name和Description
+        /// </summary>
+        /// <returns>JObject</returns>
         public JObject TranslateLangJsonHQMRoot()
         {
             JObject jsonObject = LangJObject;  

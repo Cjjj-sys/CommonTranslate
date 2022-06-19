@@ -1,20 +1,25 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net.Mime;
 
 namespace CommonTranslate;
 
 static class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
+        Console.Title = "CommonTranslate v0.1.0";
         InitTencentTranslateIdKey();
-        bool doExit = false;
-        while (!doExit)
+        while (true)
         {
-            print("请输入文件路径(或者把文件拖进来):");
+            print("请输入文件路径(或者把文件拖进来,输入;exit退出):");
             string filePath = Console.ReadLine().Replace("\"", "");
-            println("请选择文件的格式(默认为 1):");
+            if (filePath == ";exit")
+            {
+                break;
+            }
             PrintModes();
+            print("请选择文件的格式(默认为 1):");
             string translateMode = Console.ReadLine();
             switch (translateMode)
             {
@@ -31,13 +36,10 @@ static class Program
                     TranslateJson(filePath);
                     break;
             }
-            //TranslateJsonNameDescription(filePath);
-            //TranslateJson(filePath);
             println("====================================");
             println($"翻译完成,请查看文件 {filePath+".txt"}");
             println("====================================\n");
         }
-        //TranslateMidStr(filePath, "|", "|");
     }
 
     static void PrintModes()
@@ -126,7 +128,8 @@ static class Program
     static void TranslateJson(string filePath)
     {
         string langJosn = File.ReadAllText(filePath); 
-        var lang = new Lang(langJosn);
+        JObject langObject = JObject.Parse(langJosn);
+        var lang = new Lang() { LangJObject = langObject };
         JObject langJsonObject = lang.TranslateLangJson();
         string targetJson = langJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
@@ -135,7 +138,8 @@ static class Program
     static void TranslateJsonNameDescription(string filePath)
     {
         string langJosn = File.ReadAllText(filePath);
-        var lang = new Lang(langJosn);
+        JObject langJObject = JObject.Parse(langJosn);
+        var lang = new Lang() { LangJObject = langJObject };
         JObject langJsonObject = lang.TranslateLangJsonNameDescription();
         string targetJson = langJsonObject.ToString();
         File.WriteAllText(filePath + ".txt", targetJson);
@@ -145,9 +149,9 @@ static class Program
     {
         string langJosn = File.ReadAllText(filePath);
         JObject langJsonObject = JObject.Parse(langJosn);
-        var langJObject = new Lang(langJsonObject);
+        var langJObject = new Lang() { LangJObject = langJsonObject };
         JArray questsArray = JArray.Parse(langJsonObject["quests"].ToString());
-        var langJArray = new Lang(questsArray);
+        var langJArray = new Lang() { LangJArray = questsArray };
         JArray translatedArray = langJArray.TranslateLangJsonHQM();
         JObject translatedLangJsonObject = langJObject.TranslateLangJsonHQMRoot();
         translatedLangJsonObject["quests"] = translatedArray;
