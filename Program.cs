@@ -18,6 +18,25 @@ static class Program
             {
                 break;
             }
+            else if (Directory.Exists(filePath))
+            {
+                PrintModesDirectory();
+                print("请选择目录的格式(默认为 1):");
+                string translateModeDirectory = Console.ReadLine();
+                switch (translateModeDirectory)
+                {
+                    case "1":
+                        TranslateBedrockBehaviourItems(filePath);
+                        break;
+                    default:
+                        TranslateBedrockBehaviourItems(filePath);
+                        break;
+                }
+                println("====================================");
+                println($"翻译完成,请查看目录 {filePath + ".tanslated"}");
+                println("====================================\n");
+                continue;
+            }
             PrintModes();
             print("请选择文件的格式(默认为 1):");
             string translateMode = Console.ReadLine();
@@ -31,6 +50,9 @@ static class Program
                     break;
                 case "3":
                     TranslateJsonHQM(filePath);
+                    break;
+                case "4":
+                    TranslateBedrockLang(filePath);
                     break;
                 default:
                     TranslateJson(filePath);
@@ -58,6 +80,16 @@ static class Program
         println("  \"description\": \"sth\",");
         println("  \"quests\": [内含name和description的Array] ,");
         println("  ......");
+        println("4.Bedrock Lang 语言文件");
+        println("item.name=Name");
+        println("  ......");
+        println("===============================");
+    }
+
+    static void PrintModesDirectory()
+    {
+        println("===============================");
+        println("1.Bedrock Behaviour Pack Items");
         println("===============================");
     }
 
@@ -181,6 +213,65 @@ static class Program
                 fileLines[j] = fileLines[j].Replace(sourceTexts[j], translatedTexts[j]);
             }
             File.WriteAllLines(filePath + ".txt", fileLines);
+        }
+    }
+
+    static void TranslateBedrockLang(string filePath)
+    {
+        try 
+	    {	        
+		    List<string> sourceTexts = File.ReadAllLines(filePath).Select(e => e = e.Split('=')[1]).ToList();
+            List<string> translatedTexts = new List<string>();
+            long total = sourceTexts.Count;
+            long progress = 0;
+            println($"[预计用时: >={0.2 * total} 秒]");
+            foreach (var sourceText in sourceTexts)
+            {
+                if (sourceText != null)
+                {
+                    Thread.Sleep(200);
+                    string translatedText = TencentTranslate.TranslateEn2Cn(sourceText);
+                    Console.WriteLine($"[{progress}/{total}] 原文: {sourceText},译文: {translatedText}");
+                    translatedTexts.Add(translatedText);
+                    progress++;
+                }
+            }
+            for (int i = 0; i < sourceTexts.Count; i++)
+            {
+                string[] fileLines = File.ReadAllLines(filePath);
+                for (int j = 0; j < fileLines.Length; j++)
+                {
+                    fileLines[j] = fileLines[j].Replace(sourceTexts[j], translatedTexts[j]);
+                }
+                File.WriteAllLines(filePath + ".txt", fileLines);
+            }
+	    }
+	    catch (Exception exception)
+	    {
+            println(exception.Message);
+	    }
+        
+    }
+
+    static void TranslateBedrockBehaviourItems(string directoryPath)
+    {
+        if (!Directory.Exists($"{directoryPath}.translate"))
+        {
+            Directory.CreateDirectory($"{directoryPath}.translate");
+        }
+        string[] fileNames = Directory.GetFiles(directoryPath);
+        foreach (string fileName in fileNames)
+        {
+            Thread.Sleep(200);
+            string itemJosn = File.ReadAllText(fileName);
+            JObject itemObject = JObject.Parse(itemJosn);
+            var lang = new Lang() { LangJObject = itemObject };
+            JObject langJsonObject = lang.TranslateItemJsonBedrockBehaviour();
+            if (langJsonObject != null)
+            {
+                string targetJson = langJsonObject.ToString();
+                File.WriteAllText($"{directoryPath}.translate/{Path.GetFileName(fileName)}", targetJson);
+            }
         }
     }
 }

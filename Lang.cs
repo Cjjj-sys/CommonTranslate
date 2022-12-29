@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using TencentCloud.Mrs.V20200910.Models;
 
 namespace CommonTranslate
 {
@@ -173,6 +174,31 @@ namespace CommonTranslate
                 println("[INFO]无Description!");
             }
             return jsonObject;
+        }
+
+        public JObject TranslateItemJsonBedrockBehaviour()
+        {
+            JObject jsonObject = LangJObject;
+            JObject translatedObject = new JObject();
+            if (int.Parse(jsonObject["format_version"]?.ToString().Split('.')[1]) >= 16)
+            {
+                var sourceText = jsonObject["minecraft:item"]?["components"]?["minecraft:display_name"]?["value"]?.ToString();
+                if (sourceText != null)
+                {
+                    var translatedText = TencentTranslate.TranslateEn2Cn(sourceText);
+                    println($"原文:{sourceText},译文:{translatedText}");
+                    jsonObject["minecraft:item"]["components"]["minecraft:display_name"]["value"] = translatedText;
+                    return jsonObject;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 
